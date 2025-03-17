@@ -7,19 +7,21 @@ class Snake
 {
 public:
 
+	Snake() = default;
+
 	void move(Direction direction);
 	void grow();
 
 private:
 
 	std::deque<Position> m_body{
-	Position{0, 0},
-	Position{0, 1},
-	Position{0, 2},
-	Position{0, 3},
+	Position{12, 4},
+	Position{12, 3},
+	Position{12, 2},
+	Position{12, 1},
 	};
 
-	Direction m_direction{};
+	Direction m_direction{Direction::right};
 };
 
 #endif

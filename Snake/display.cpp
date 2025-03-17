@@ -2,20 +2,21 @@
 
 using namespace Settings;
 
-void Display::render() const
+void Display::render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
 {
 	auto board{ makeArray2D() };
 
 	renderBorders(board);
 
-	renderSnake(board);
+	renderSnake(board, snakeBody);
 
-	for (const auto& e : *board)
-	{
-		for (const auto& i : e)
-			std::cout << i;
-		std::cout << "\n";
-	}
+	renderFood(board, food);
+
+	renderScore(score);
+
+	std::cout << "\n\n";
+
+	renderBoard(board);
 }
 
 std::unique_ptr<Array2D> Display::makeArray2D() const
@@ -44,7 +45,34 @@ void Display::renderBorders(std::unique_ptr<Array2D>& board) const
 	}
 }
 
-void Display::renderSnake(std::unique_ptr<Array2D>& board) const
+void Display::renderSnake(std::unique_ptr<Array2D>& board, const std::deque<Position>& snakeBody) const
 {
+	for (size_t i{}; i < snakeBody.size(); i++)
+	{
+		if (i == 0)
+			(*board.get())[snakeBody[i].y][snakeBody[i].x] = 'O';
 
+		else
+		(*board.get())[snakeBody[i].y][snakeBody[i].x] = 'o';
+	}
+}
+
+void Display::renderFood(std::unique_ptr<Array2D>& board, const Position& food) const
+{
+	(*board.get())[food.y][food.x] = '*';
+}
+
+void Display::renderScore(const int& score) const
+{
+	std::cout << "Score: " << score;
+}
+
+void Display::renderBoard(const std::unique_ptr<Array2D>& board) const
+{
+	for (const auto& e : *board)
+	{
+		for (const auto& i : e)
+			std::cout << i;
+		std::cout << "\n";
+	}
 }

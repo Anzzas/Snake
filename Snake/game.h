@@ -21,7 +21,7 @@ private:
 
 	Board m_board{};
 	Snake m_snake{};
-	Food m_food{};
+	Food m_food{Food::generate(Position::createRandomPosition())};
 	PlayerController m_controller{};
 	Display m_display{};
 	int m_score{};

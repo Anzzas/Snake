@@ -7,6 +7,7 @@ int main()
 		<< "- Try to get the highest score possible by eating all the food !\n"
 		<< "- Do not hit a wall or yourself, otherwise it is lost !\n\n";
 
+	Game game{};
 	Display display{};
 	display.render();
 }

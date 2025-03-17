@@ -1,5 +1,6 @@
 #ifndef PLAYERCONTROLLER_H
 #define PLAYERCONTROLLER_H
+#include "common.h"
 
 class PlayerController
 {

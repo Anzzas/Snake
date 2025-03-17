@@ -1,13 +1,19 @@
 #ifndef FOOD_H
 #define FOOD_H
+#include "random.h"
 
 class Food
 {
 public:
 
-	void generate();
+	static Food generate(Position position) { return Food{ position }; }
 
 private:
+
+	Food(Position pos)
+		: m_pos{ pos }
+	{
+	}
 
 	Position m_pos{};
 };

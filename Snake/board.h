@@ -8,8 +8,8 @@ public:
 
 	Board() = default;
 
-	bool isEmpty(Position pos);
-	bool isWall();
+	bool isEmpty(Position pos) const;
+	bool isWall(Position pos) const;
 
 private:
 
