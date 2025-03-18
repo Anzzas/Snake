@@ -4,78 +4,118 @@ using namespace Settings;
 
 void Display::render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
 {
-	auto board{ makeArray2D() };
+	static bool firstFrame{ true };
+	static std::deque<Position> oldSnakeBody;
+	static Position oldFood{ 0, 0 };
+	static int oldScore{};
 
-	renderBorders(board);
 
-	renderSnake(board, snakeBody);
-
-	renderFood(board, food);
-
-	renderScore(score);
-
-	std::cout << "\n\n";
-
-	renderBoard(board);
-}
-
-std::unique_ptr<Array2D> Display::makeArray2D() const
-{
-	auto board{ std::make_unique<Array2D>() };
-
-	for (auto& row : *board)
-		for (auto& col : row)
-			col = ' ';
-
-	return board;
-}
-
-void Display::renderBorders(std::unique_ptr<Array2D>& board) const
-{
-	for (size_t y{}; y < boardHeight; y++)
+	if (firstFrame)
 	{
-		(*board.get())[y][0] = '#';
-		(*board.get())[y][boardWidth - 1] = '#';
+		econio_clrscr();
+		renderBorders();
+		renderScore(score);
+		renderFood(food);
+		firstFrame = false;
+	}
 
-		for (size_t x{}; x < boardWidth; x++)
+	else
+	{
+		for (const auto& pos : oldSnakeBody)
 		{
-			if (y == 0 || y == boardHeight - 1)
-				(*board.get())[y][x] = '#';
+			econio_gotoxy(pos.x, pos.y);
+			std::cout << " ";
+		}
+
+		if (oldFood != food)
+		{
+			econio_gotoxy(oldFood.x, oldFood.y);
+			renderFood(food);
+		}
+
+		if (oldScore != score)
+			renderScore(score);
+	}
+
+
+	renderSnake(snakeBody);
+
+	oldSnakeBody = snakeBody;
+	oldFood = food;
+	oldScore = score;
+
+
+	// S'assurer que tout est affiché
+	econio_flush();
+}
+
+
+void Display::renderBorders() const
+{
+	econio_textcolor(COL_YELLOW);
+	for (int y{}; y < boardHeight; y++)
+	{
+		for (int x{}; x < boardWidth; x++)
+		{
+			if (x == 0 || x == boardWidth - 1 || y == 0 || y == boardHeight - 1)
+			{
+				econio_gotoxy(x, y);
+				std::cout << "#";
+			}
 		}
 	}
 }
 
-void Display::renderSnake(std::unique_ptr<Array2D>& board, const std::deque<Position>& snakeBody) const
+
+void Display::renderSnake(const std::deque<Position>& snakeBody) const
 {
 	for (size_t i{}; i < snakeBody.size(); i++)
 	{
+		const auto& [snakeBodyY, snakeBodyX] = snakeBody[i];
+
+
+		econio_gotoxy(static_cast<int>(snakeBodyX), static_cast<int>(snakeBodyY));
+
+
 		if (i == 0)
-			(*board.get())[snakeBody[i].y][snakeBody[i].x] = 'O';
+		{
+			econio_textcolor(COL_LIGHTGREEN);
+			std::cout << "O";
+		}
+
 
 		else
-		(*board.get())[snakeBody[i].y][snakeBody[i].x] = 'o';
+		{
+			econio_textcolor(COL_GREEN);
+			std::cout << "o";
+		}
 	}
 }
 
-void Display::renderFood(std::unique_ptr<Array2D>& board, const Position& food) const
+
+void Display::renderFood(const Position& food) const
 {
-	(*board.get())[food.y][food.x] = '*';
+	econio_gotoxy(static_cast<int>(food.x), static_cast<int>(food.y));
+	
+
+	econio_textcolor(COL_LIGHTRED);
+
+
+	std::cout << "*";
 }
+
 
 void Display::renderScore(const int& score) const
 {
+	econio_textcolor(COL_YELLOW);
+
+
+	econio_gotoxy(0, Settings::boardHeight + 1);
+
+
 	std::cout << "Score: " << score;
 }
 
-void Display::renderBoard(const std::unique_ptr<Array2D>& board) const
-{
-	for (const auto& e : *board)
-	{
-		for (const auto& i : e)
-			std::cout << i;
-		std::cout << "\n";
-	}
-}
 
 void Display::welcomeMsg() const
 {
@@ -84,8 +124,15 @@ void Display::welcomeMsg() const
 		<< "- Do not hit a wall or yourself, otherwise it is lost !\n\n";
 }
 
+
 void Display::gameOverMsg(const int& score) const
 {
-	std::cout << "\n\n\nGame over !\n"
+	econio_gotoxy(0, Settings::boardHeight + 1);
+
+
+	econio_textcolor(COL_YELLOW);
+
+
+	std::cout << "Game over !\n"
 		<< "You scored: " << score << "\n\n\n\n";
 }

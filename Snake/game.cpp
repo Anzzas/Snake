@@ -10,7 +10,7 @@ void Game::run()
 	while (m_isRunning)
 	{
 		update();
-		econio_sleep(0.01);
+		econio_sleep(0.05);
 	}
 
 

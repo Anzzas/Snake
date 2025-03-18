@@ -5,7 +5,7 @@
 namespace Settings
 {
 	constexpr int boardHeight{ 25 };
-	constexpr int boardWidth{ 120 };
+	constexpr int boardWidth{ 25 };
 }
 
 struct Position

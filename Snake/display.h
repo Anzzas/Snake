@@ -1,6 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 #include "common.h"
+#include "econio.h"
 #include <array>
 #include <memory>
 #include <iostream>
@@ -20,12 +21,10 @@ public:
 
 private:
 
-	std::unique_ptr<Array2D> makeArray2D() const;
-	void renderBorders(std::unique_ptr<Array2D>& board) const;
-	void renderSnake(std::unique_ptr<Array2D>& board, const std::deque<Position>& snakeBody) const;
-	void renderFood(std::unique_ptr<Array2D>& board, const Position& food) const;
+	void renderBorders() const;
+	void renderSnake(const std::deque<Position>& snakeBody) const;
+	void renderFood(const Position& food) const;
 	void renderScore(const int& score) const;
-	void renderBoard(const std::unique_ptr<Array2D>& board) const;
 };
 
 #endif
