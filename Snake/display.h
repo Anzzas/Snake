@@ -8,11 +8,14 @@
 
 using Array2D = std::array<std::array<char, Settings::boardWidth>, Settings::boardHeight>;
 
+//* Class in charge of displaying everything
 class Display
 {
 public:
 
-	const int& showScore();
+	void welcomeMsg() const;
+	void gameOverMsg(const int& score) const;
+	const int& showScore() const;
 	void render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const;
 
 private:

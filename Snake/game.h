@@ -5,6 +5,7 @@
 #include "food.h"
 #include "playerController.h"
 #include "display.h"
+#include "econio.h"
 
 class Game
 {
@@ -13,9 +14,6 @@ public:
 	Game() = default;
 
 	void run();
-	void update();
-	bool checkCollision();
-	void handleScore();
 
 private:
 
@@ -26,6 +24,10 @@ private:
 	Display m_display{};
 	int m_score{};
 	bool m_isRunning{};
+
+	void update();
+	bool checkCollision() const;
+	void handleScore();
 };
 
 #endif

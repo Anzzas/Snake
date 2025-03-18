@@ -30,6 +30,12 @@
     <ClCompile Include="playerController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="econio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="snake.h">
@@ -54,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="random.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="econio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

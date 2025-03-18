@@ -76,3 +76,16 @@ void Display::renderBoard(const std::unique_ptr<Array2D>& board) const
 		std::cout << "\n";
 	}
 }
+
+void Display::welcomeMsg() const
+{
+	std::cout << "\t\tWelcome to Snake Game !\n\n"
+		<< "- Try to get the highest score possible by eating all the food !\n"
+		<< "- Do not hit a wall or yourself, otherwise it is lost !\n\n";
+}
+
+void Display::gameOverMsg(const int& score) const
+{
+	std::cout << "Game over !\n"
+		<< "You scored: " << score;
+}

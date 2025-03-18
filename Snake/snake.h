@@ -11,6 +11,8 @@ public:
 
 	void move(Direction direction);
 	void grow();
+	const std::deque<Position>& getBody() const { return m_body; }
+	const Direction& getDirection() const { return m_direction; }
 
 private:
 

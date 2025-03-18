@@ -7,6 +7,7 @@ class Food
 public:
 
 	static Food generate(Position position) { return Food{ position }; }
+	const Position& getPos() const { return m_pos; }
 
 private:
 

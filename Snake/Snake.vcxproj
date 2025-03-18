@@ -130,12 +130,15 @@
   <ItemGroup>
     <ClCompile Include="board.cpp" />
     <ClCompile Include="display.cpp" />
+    <ClCompile Include="econio.c" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="playerController.cpp" />
     <ClCompile Include="snake.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
+    <ClInclude Include="econio.h" />
     <ClInclude Include="food.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="playerController.h" />
