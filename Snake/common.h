@@ -13,12 +13,12 @@ struct Position
 	size_t y{};
 	size_t x{};
 
-	bool operator== (const Position& pos) { return pos.x == x && pos.y == y; }
+	bool operator== (const Position& pos) const { return pos.x == x && pos.y == y; }
 
 	static Position createRandomPosition()
 	{
-		size_t y{ static_cast<size_t>(Random::get(1, Settings::boardHeight - 1)) };
-		size_t x{ static_cast<size_t>(Random::get(1, Settings::boardWidth - 1)) };
+		size_t y{ static_cast<size_t>(Random::get(1, Settings::boardHeight - 2)) };
+		size_t x{ static_cast<size_t>(Random::get(1, Settings::boardWidth - 2)) };
 		Position randomPos{ y, x };
 
 		return randomPos;

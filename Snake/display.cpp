@@ -86,6 +86,6 @@ void Display::welcomeMsg() const
 
 void Display::gameOverMsg(const int& score) const
 {
-	std::cout << "Game over !\n"
-		<< "You scored: " << score;
+	std::cout << "\n\n\nGame over !\n"
+		<< "You scored: " << score << "\n\n\n\n";
 }

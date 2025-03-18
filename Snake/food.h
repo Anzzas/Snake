@@ -6,15 +6,15 @@ class Food
 {
 public:
 
-	static Food generate(Position position) { return Food{ position }; }
-	const Position& getPos() const { return m_pos; }
-
-private:
-
 	Food(Position pos)
 		: m_pos{ pos }
 	{
 	}
+
+	void generate(Position position) { m_pos = position; }
+	const Position& getPos() const { return m_pos; }
+
+private:
 
 	Position m_pos{};
 };

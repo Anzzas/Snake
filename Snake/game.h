@@ -19,11 +19,11 @@ private:
 
 	Board m_board{};
 	Snake m_snake{};
-	Food m_food{Food::generate(Position::createRandomPosition())};
+	Food m_food{Position::createRandomPosition()};
 	PlayerController m_controller{};
 	Display m_display{};
 	int m_score{};
-	bool m_isRunning{};
+	bool m_isRunning{ true };
 
 	void update();
 	bool checkCollision() const;

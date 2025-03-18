@@ -28,7 +28,7 @@ Direction PlayerController::getDirection(Direction currentDirection)
 			break;
 		case KEY_LEFT:
 			if (currentDirection != right)
-				return down;
+				return left;
 			break;
 		case KEY_ESCAPE: 
 			m_isQuitting = true;
@@ -36,6 +36,9 @@ Direction PlayerController::getDirection(Direction currentDirection)
 		default: return currentDirection;
 		}
 	}
+
+
+	return currentDirection;
 }
 
 //* Returns whether the player has pressed ESCAPE key to QUIT or not
