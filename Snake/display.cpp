@@ -5,48 +5,58 @@ using namespace Settings;
 void Display::render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
 {
 	static bool firstFrame{ true };
-	static std::deque<Position> oldSnakeBody;
-	static Position oldFood{ 0, 0 };
-	static int oldScore{};
 
 
 	if (firstFrame)
 	{
-		econio_clrscr();
-		renderBorders();
-		renderScore(score);
-		renderFood(food);
+		renderFirstFrame(food, score);
 		firstFrame = false;
 	}
 
+
 	else
-	{
-		for (const auto& pos : oldSnakeBody)
-		{
-			econio_gotoxy(pos.x, pos.y);
-			std::cout << " ";
-		}
-
-		if (oldFood != food)
-		{
-			econio_gotoxy(oldFood.x, oldFood.y);
-			renderFood(food);
-		}
-
-		if (oldScore != score)
-			renderScore(score);
-	}
+		removeOldFrame(snakeBody, food, score);
 
 
 	renderSnake(snakeBody);
 
+
+	econio_flush();
+}
+
+
+void Display::renderFirstFrame(const Position& food, const int& score) const
+{
+	econio_clrscr();
+	renderBorders();
+	renderScore(score);
+	renderFood(food);
+}
+
+
+void Display::removeOldFrame(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
+{
+	static std::deque<Position> oldSnakeBody;
+	static Position oldFood{ 0, 0 };
+	static int oldScore{};
+
+	for (const auto& pos : oldSnakeBody)
+	{
+		econio_gotoxy(static_cast<int>(pos.x), static_cast<int>(pos.y));
+		std::cout << " ";
+	}
+
+	if (oldFood != food)
+		renderFood(food);
+
+
+	if (oldScore != score)
+		renderScore(score);
+
+
 	oldSnakeBody = snakeBody;
 	oldFood = food;
 	oldScore = score;
-
-
-	// S'assurer que tout est affiché
-	econio_flush();
 }
 
 
@@ -119,6 +129,9 @@ void Display::renderScore(const int& score) const
 
 void Display::welcomeMsg() const
 {
+	econio_textcolor(COL_YELLOW);
+
+
 	std::cout << "\t\tWelcome to Snake Game !\n\n"
 		<< "- Try to get the highest score possible by eating all the food !\n"
 		<< "- Do not hit a wall or yourself, otherwise it is lost !\n\n";

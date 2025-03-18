@@ -8,8 +8,9 @@ public:
 
 	Board() = default;
 
-	bool isEmpty(Position pos) const;
-	bool isWall(Position pos) const;
+
+	/** Checking if the position is in a wall or not*/
+	bool isWall(const Position& pos) const;
 
 private:
 

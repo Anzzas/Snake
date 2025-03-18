@@ -4,6 +4,11 @@ void Game::run()
 {
 
 	m_display.welcomeMsg();
+
+
+	econio_sleep(1.5);
+
+
 	econio_rawmode();
 
 
@@ -69,7 +74,9 @@ void Game::handleScore()
 	if (m_snake.getBody()[0] == m_food.getPos())
 	{
 		m_score += 50;
-		m_food.generate(Position::createRandomPosition());
+
+		m_food.generate(Position::createRandomPosition(m_snake.getBody()));
+		
 		m_snake.grow();
 	}
 }

@@ -11,7 +11,11 @@ public:
 	{
 	}
 
-	void generate(Position position) { m_pos = position; }
+
+	/** Give the new random position on this Food object*/
+	void generate(Position randomPosition) { m_pos = randomPosition; }
+
+
 	const Position& getPos() const { return m_pos; }
 
 private:
