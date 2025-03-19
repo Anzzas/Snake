@@ -17,7 +17,7 @@ public:
 	Direction getDirection(Direction snakeDirection);
 
 
-	Direction getMenuDirection(const Direction& direction) const;
+	std::optional<Direction> getMenuDirection(const InputType& input) const;
 
 
 	/** Detecting ESCAPE input and stop the game if pressed*/
@@ -25,6 +25,9 @@ public:
 
 
 	bool hasPressedEnter() const;
+
+
+	InputType getInput() const;
 
 private:
 

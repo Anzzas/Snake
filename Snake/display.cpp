@@ -1,17 +1,17 @@
 ﻿#include "display.h"
 
 using namespace Settings;
+using namespace ReplayMenuSettings;
 
 void Display::render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
 {
-	static bool firstFrame{ true };
 
 
-	if (firstFrame)
+	if (m_firstMainGameFrame)
 	{
 		renderFirstFrame(food, score);
 		removeOldFrame(snakeBody, food, score);
-		firstFrame = false;
+		m_firstMainGameFrame = false;
 	}
 
 
@@ -139,30 +139,36 @@ void Display::welcomeMsg() const
 }
 
 
-void Display::gameOverMsg(const int& score) const
+void Display::renderReplayMenu(const int& score, const InputType& input) const
 {
-	econio_gotoxy(0, Settings::boardHeight + 1);
+
+	if (m_firstReplayMenuFrame)
+	{
+		econio_clrscr();
 
 
-	econio_textcolor(COL_YELLOW);
+		renderReplayMenuBorders();
 
 
-	std::cout << "Game over !\n"
-		<< "You scored: " << score << "\n\n\n\n";
+		renderReplayMenuText(score);
+
+
+		m_firstReplayMenuFrame = false;
+	}
+
+
+	renderReplayMenuSelectCursor(input);
+
+
+	econio_flush();
+
+
+	econio_gotoxy(0, 22); // For end program text
 }
 
 
-void Display::renderReplayMenu(const int& score) const
+void Display::renderReplayMenuBorders() const
 {
-	constexpr std::array<int, 3> rows{ 2, 6, 20 };
-	constexpr std::array<int, 2> cols{ 40, 65 };
-	constexpr int width{ cols[1] - cols[0] };
-	constexpr int centerX{ cols[0] + width / 2 };
-
-
-	econio_clrscr();
-
-
 	for (const auto& y : rows)
 	{
 		for (int x = cols.front(); x < cols.back() + 1; x++)
@@ -188,49 +194,102 @@ void Display::renderReplayMenu(const int& score) const
 				std::cout << "|";
 		}
 	}
+}
 
-
+void Display::renderReplayMenuText(const int& score) const
+{
 	econio_textcolor(COL_YELLOW);
-	std::string gameOverText = "GAME OVER!";
+	std::string gameOverText{ "GAME OVER!" };
 	econio_gotoxy(centerX - gameOverText.length() / 2, 4);
 	std::cout << gameOverText;
 
 
-	std::string scorePrefix = "Final score: ";
+	std::string scorePrefix{ "Final score: " };
 	std::string scoreText = scorePrefix + std::to_string(score);
 	econio_gotoxy(centerX - scoreText.length() / 2, 5);
 	std::cout << scoreText;
 
 
 	econio_textcolor(COL_WHITE);
-	std::string option1 = "Play Again";
+	std::string option1{ "Play Again" };
 	econio_gotoxy(centerX - option1.length() / 2, 10);
 	std::cout << option1;
 
 
-	std::string option2 = "Change Difficulty";
+	std::string option2{ "Change Difficulty" };
 	econio_gotoxy(centerX - option2.length() / 2, 12);
 	std::cout << option2;
 
 
-	std::string option3 = "Quit";
+	std::string option3{ "Quit" };
 	econio_gotoxy(centerX - option3.length() / 2, 14);
 	std::cout << option3;
 
 
 	econio_textcolor(COL_LIGHTGRAY);
-	std::string instruction1 = "[UP/DOWN]: Navigate";
+	std::string instruction1{ "[UP/DOWN]: Navigate" };
 	econio_gotoxy(centerX - instruction1.length() / 2, 17);
 	std::cout << instruction1;
 
 
-	std::string instruction2 = "[ENTER]: Select";
+	std::string instruction2{ "[ENTER]: Select" };
 	econio_gotoxy(centerX - instruction2.length() / 2, 18);
 	std::cout << instruction2;
+}
 
 
-	econio_flush();
+void Display::renderReplayMenuSelectCursor(const InputType& input) const
+{
+	
+	if (input == InputType::up_arrow || input == InputType::down_arrow)
+	{
+		econio_gotoxy(m_currentCursorPos.x, m_currentCursorPos.y);
+		std::cout << " ";
 
 
-	econio_gotoxy(0, 22); // For end program text
+		switch (input)
+		{
+		case InputType::up_arrow:
+
+			if (m_currentCursorPos == playAgainCursorPos)
+				m_currentCursorPos = quitCursorPos;
+
+
+			else if (m_currentCursorPos == difficultyCursorPos)
+				m_currentCursorPos = playAgainCursorPos;
+
+
+			else if (m_currentCursorPos == quitCursorPos)
+				m_currentCursorPos = difficultyCursorPos;
+
+
+			break;
+
+
+		case InputType::down_arrow:
+
+			if (m_currentCursorPos == playAgainCursorPos)
+				m_currentCursorPos = difficultyCursorPos;
+
+
+			else if (m_currentCursorPos == difficultyCursorPos)
+				m_currentCursorPos = quitCursorPos;
+
+
+			else if (m_currentCursorPos == quitCursorPos)
+				m_currentCursorPos = playAgainCursorPos;
+		}
+
+
+		econio_gotoxy(m_currentCursorPos.x, m_currentCursorPos.y);
+		std::cout << ">";
+	}
+}
+
+
+void Display::displayLoadingText() const
+{
+	econio_textcolor(COL_LIGHTGRAY);
+	econio_gotoxy(50, 15);
+	std::cout << "Loading ...";
 }

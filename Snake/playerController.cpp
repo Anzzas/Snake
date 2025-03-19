@@ -1,6 +1,7 @@
 #include "playercontroller.h"
 
 using enum Direction;
+using enum InputType;
 
 /** Getting the input direction
 * Returns the current direction if an opposite direction key is pressed
@@ -47,20 +48,16 @@ const bool& PlayerController::isQuitReq() const
 	return m_isQuitting;
 }
 
-Direction PlayerController::getMenuDirection(const Direction& currentDirection) const
+std::optional<Direction> PlayerController::getMenuDirection(const InputType& input) const
 {
-	if (econio_kbhit())
-	{
-		int key{ econio_getch() };
 
-		switch (key)
+		switch (input)
 		{
-		case KEY_LEFT: return left;
-		case KEY_RIGHT: return right;
-		default: return currentDirection;
+		case InputType::up_arrow: return up;
+		case InputType::down_arrow: return down;
+		default: return {};
 		}
-	}
-	return currentDirection;
+	return {};
 }
 
 bool PlayerController::hasPressedEnter() const
@@ -72,4 +69,28 @@ bool PlayerController::hasPressedEnter() const
 
 		return key == KEY_ENTER;
 	}
+}
+
+
+InputType PlayerController::getInput() const
+{
+	if (econio_kbhit())
+	{
+		int key{ econio_getch() };
+
+
+		switch (key)
+		{
+		case KEY_UP: return up_arrow;
+		case KEY_RIGHT: return right_arrow;
+		case KEY_DOWN: return down_arrow;
+		case KEY_LEFT: return left_arrow;
+		case KEY_ESCAPE: return escape;
+		case KEY_ENTER: return enter;
+		default: return none_key;
+		}
+	}
+
+
+	return none_key;
 }

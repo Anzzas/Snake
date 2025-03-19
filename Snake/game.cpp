@@ -2,32 +2,34 @@
 
 void Game::run()
 {
-	bool replayGame{ true };
+	m_display.displayLoadingText();
 
 
-	m_display.welcomeMsg();
+	econio_sleep(GameSettings::loadingTime);
 
 
-	while (replayGame)
+	econio_rawmode();
+
+
+	while (m_isRunning)
 	{
-		econio_sleep(GameSettings::loadingTime);
+		update();
 
 
-		econio_rawmode();
+		econio_sleep(GameSettings::gameSpeed);
+	}
 
 
-		while (m_isRunning)
-		{
-			update();
-			econio_sleep(GameSettings::gameSpeed);
-		}
+	if (replay())
+	{
+
+		econio_clrscr();
 
 
-		m_display.gameOverMsg(m_score);
+		Game newGame{};
 
 
-		replayGame = replay();
-		m_isRunning = replayGame;
+		newGame.run();
 	}
 
 
@@ -43,13 +45,7 @@ void Game::update()
 	m_snake.move(m_controller.getDirection(m_snake.getDirection()));
 
 
-	if (m_controller.isQuitReq())
-	{
-		m_isRunning = false;
-		return;
-	}
-
-	if (checkCollision())
+	if (m_controller.isQuitReq() || checkCollision())
 	{
 		m_isRunning = false;
 		return;
@@ -91,48 +87,84 @@ void Game::handleScore()
 
 bool Game::replay() const
 {
-	constexpr Position replayPos{Settings::boardHeight + 5, 0 };
-	constexpr Position yesPos{Settings::boardHeight + 5, 0 };
-	constexpr Position noPos{ Settings::boardHeight + 5, 5 };
+	ReplaySelection selection{ReplaySelection::playAgain};
 
-	econio_gotoxy(replayPos.x, replayPos.y);
-	std::cout << "Replay ?";
 
-	econio_gotoxy(yesPos.x, yesPos.y);
-	std::cout << "Yes";
-
-	econio_gotoxy(noPos.x, noPos.y);
-	std::cout << "No";
+	m_display.renderReplayMenu(m_score, InputType::up_arrow); // Do once
 	
-	Direction currentDir{ Direction::left };
-	econio_gotoxy(yesPos.x, yesPos.y + 1);
 	while (true)
 	{
-		if (econio_kbhit())
+		InputType input{ m_controller.getInput() };
+
+
+		if (input == InputType::enter)
 		{
-			const int key{ econio_getch() };
-
-			switch (key)
+			switch (selection)
 			{
-			case KEY_ENTER: return currentDir == Direction::left ? true : false;
+			case ReplaySelection::playAgain: return true;
+			case ReplaySelection::changeDifficulty: continue; // Not implemented yet
+			case ReplaySelection::quit: return false;
+			}
+		}
 
 
-			case KEY_LEFT:
-				currentDir = Direction::left;
-				econio_gotoxy(yesPos.x, yesPos.y + 1);
+		else if (input == InputType::up_arrow || input == InputType::down_arrow)
+		{
+
+
+			switch (input)
+			{
+			case InputType::up_arrow:
+
+				switch (selection)
+				{
+				case ReplaySelection::playAgain:
+					selection = ReplaySelection::quit;
+					break;
+
+
+				case ReplaySelection::changeDifficulty:
+					selection = ReplaySelection::playAgain;
+					break;
+
+
+				case ReplaySelection::quit:
+					selection = ReplaySelection::changeDifficulty;
+					break;
+				}
+
+
 				break;
 
 
-			case KEY_RIGHT:
-				currentDir = Direction::right;
-				econio_gotoxy(noPos.x, noPos.y + 1);
+			case InputType::down_arrow:
+
+				switch (selection)
+				{
+				case ReplaySelection::playAgain:
+					selection = ReplaySelection::changeDifficulty;
+					break;
+
+
+				case ReplaySelection::changeDifficulty:
+					selection = ReplaySelection::quit;
+					break;
+
+
+				case ReplaySelection::quit:
+					selection = ReplaySelection::playAgain;
+					break;
+				}
+
+
 				break;
 
-				
+
 			default: continue;
 			}
 
+
+			m_display.renderReplayMenu(m_score, input);
 		}
 	}
-	return true;
 }

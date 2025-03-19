@@ -49,4 +49,26 @@ enum class Direction
 	max_directions
 };
 
+
+enum class ReplaySelection
+{
+	playAgain,
+	changeDifficulty,
+	quit,
+	max_selections
+};
+
+
+enum class InputType
+{
+	up_arrow,
+	right_arrow,
+	down_arrow,
+	left_arrow,
+	enter,
+	escape,
+	none_key,
+	max_inputTypes
+};
+
 #endif
