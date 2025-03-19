@@ -14,11 +14,17 @@ public:
 
 	
 	/** Converting inputs (arrow keys) into a Direction*/
-	Direction getDirection(Direction direction);
+	Direction getDirection(Direction snakeDirection);
+
+
+	Direction getMenuDirection(const Direction& direction) const;
 
 
 	/** Detecting ESCAPE input and stop the game if pressed*/
 	const bool& isQuitReq() const;
+
+
+	bool hasPressedEnter() const;
 
 private:
 

@@ -1,26 +1,34 @@
-#include "game.h"
+﻿#include "game.h"
 
 void Game::run()
 {
+	bool replayGame{ true };
+
 
 	m_display.welcomeMsg();
 
 
-	econio_sleep(GameSettings::loadingTime);
-
-
-	econio_rawmode();
-
-
-	while (m_isRunning)
+	while (replayGame)
 	{
-		update();
-		econio_sleep(GameSettings::gameSpeed);
+		econio_sleep(GameSettings::loadingTime);
+
+
+		econio_rawmode();
+
+
+		while (m_isRunning)
+		{
+			update();
+			econio_sleep(GameSettings::gameSpeed);
+		}
+
+
+		m_display.gameOverMsg(m_score);
+
+
+		replayGame = replay();
+		m_isRunning = replayGame;
 	}
-
-
-	m_display.gameOverMsg(m_score);
-	replay();
 
 
 	econio_normalmode();
@@ -28,7 +36,6 @@ void Game::run()
 
 void Game::update()
 {
-
 
 	m_display.render(m_snake.getBody(), m_food.getPos(), m_score);
 
@@ -84,14 +91,51 @@ void Game::handleScore()
 
 bool Game::replay() const
 {
-	econio_gotoxy(0, Settings::boardHeight + 3);
+	constexpr Position replayPos{Settings::boardHeight + 3, 0 };
+	constexpr Position yesPos{Settings::boardHeight + 4, 0 };
+	constexpr Position noPos{ Settings::boardHeight + 4, 4 };
+
+	econio_gotoxy(replayPos.x, replayPos.y);
 	std::cout << "Replay ?";
 
-	econio_gotoxy(0, Settings::boardHeight + 4);
+	econio_gotoxy(yesPos.x, yesPos.y);
 	std::cout << "Yes";
 
-	econio_gotoxy(4, Settings::boardHeight + 4);
+	econio_gotoxy(noPos.x, noPos.y);
 	std::cout << "No";
 	
+	Direction currentDir{ Direction::left };
+
+	while (true)
+	{
+		Direction newDir{ m_controller.getMenuDirection(currentDir) };
+
+		if (currentDir == newDir)
+		{
+			if (m_controller.hasPressedEnter())
+			{
+				switch (newDir)
+				{
+				case Direction::right: return false;
+				case Direction::left: return true;
+				}
+			}
+			continue;
+		}
+
+
+		else if (newDir == Direction::right)
+		{
+			econio_gotoxy(noPos.x, noPos.y + 1);
+			//std::cout << "-";
+		}
+		else if (newDir == Direction::left)
+		{
+			econio_gotoxy(yesPos.x, yesPos.y + 1);
+			//std::cout << "-";
+		}
+
+		currentDir = newDir;
+	}
 	return true;
 }

@@ -46,3 +46,30 @@ const bool& PlayerController::isQuitReq() const
 {
 	return m_isQuitting;
 }
+
+Direction PlayerController::getMenuDirection(const Direction& currentDirection) const
+{
+	if (econio_kbhit())
+	{
+		int key{ econio_getch() };
+
+		switch (key)
+		{
+		case KEY_LEFT: return left;
+		case KEY_RIGHT: return right;
+		default: return currentDirection;
+		}
+	}
+	return currentDirection;
+}
+
+bool PlayerController::hasPressedEnter() const
+{
+	if (econio_kbhit())
+	{
+		int key{ econio_getch() };
+
+
+		return key == KEY_ENTER;
+	}
+}
