@@ -6,7 +6,7 @@ void Game::run()
 	m_display.welcomeMsg();
 
 
-	econio_sleep(1.5);
+	econio_sleep(GameSettings::loadingTime);
 
 
 	econio_rawmode();
@@ -15,11 +15,12 @@ void Game::run()
 	while (m_isRunning)
 	{
 		update();
-		econio_sleep(0.05);
+		econio_sleep(GameSettings::gameSpeed);
 	}
 
 
 	m_display.gameOverMsg(m_score);
+	replay();
 
 
 	econio_normalmode();
@@ -73,10 +74,24 @@ void Game::handleScore()
 {
 	if (m_snake.getBody()[0] == m_food.getPos())
 	{
-		m_score += 50;
+		m_score += GameSettings::addScore;
 
 		m_food.generate(Position::createRandomPosition(m_snake.getBody()));
 		
 		m_snake.grow();
 	}
+}
+
+bool Game::replay() const
+{
+	econio_gotoxy(0, Settings::boardHeight + 3);
+	std::cout << "Replay ?";
+
+	econio_gotoxy(0, Settings::boardHeight + 4);
+	std::cout << "Yes";
+
+	econio_gotoxy(4, Settings::boardHeight + 4);
+	std::cout << "No";
+	
+	return true;
 }

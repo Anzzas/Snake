@@ -7,6 +7,13 @@
 #include "display.h"
 #include "econio.h"
 
+namespace GameSettings
+{
+	constexpr int addScore{ 50 };
+	constexpr double gameSpeed{ 0.05 };
+	constexpr double loadingTime{ 1.5 };
+}
+
 class Game
 {
 public:
@@ -42,6 +49,10 @@ private:
 	* Then generating a new Position for the food 
 	* And growing the Snake body by ONE */
 	void handleScore();
+
+
+	/** Return bool whether the player wants to replay the game or not*/
+	bool replay() const;
 };
 
 #endif

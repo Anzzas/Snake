@@ -10,6 +10,7 @@ void Display::render(const std::deque<Position>& snakeBody, const Position& food
 	if (firstFrame)
 	{
 		renderFirstFrame(food, score);
+		removeOldFrame(snakeBody, food, score);
 		firstFrame = false;
 	}
 
@@ -36,7 +37,7 @@ void Display::renderFirstFrame(const Position& food, const int& score) const
 
 void Display::removeOldFrame(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
 {
-	static std::deque<Position> oldSnakeBody;
+	static std::deque<Position> oldSnakeBody{};
 	static Position oldFood{ 0, 0 };
 	static int oldScore{};
 
