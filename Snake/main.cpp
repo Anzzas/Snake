@@ -2,6 +2,9 @@
 
 int main()
 {
-	Game game{};
-	game.run();
+	//Game game{};
+	//game.run();
+
+	Display display;
+	display.renderReplayMenu(15);
 }

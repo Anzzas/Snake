@@ -4,6 +4,7 @@
 #include "econio.h"
 #include <iostream>
 #include <deque>
+#include <array>
 
 
 //* Class in charge of displaying everything
@@ -21,6 +22,9 @@ public:
 
 	/** Displaying all the objects (Snake, Food, Score and the Borders*/
 	void render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const;
+
+
+	void renderReplayMenu(const int& score) const;
 
 private:
 

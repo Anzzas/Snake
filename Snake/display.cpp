@@ -1,4 +1,4 @@
-#include "display.h"
+﻿#include "display.h"
 
 using namespace Settings;
 
@@ -149,4 +149,88 @@ void Display::gameOverMsg(const int& score) const
 
 	std::cout << "Game over !\n"
 		<< "You scored: " << score << "\n\n\n\n";
+}
+
+
+void Display::renderReplayMenu(const int& score) const
+{
+	constexpr std::array<int, 3> rows{ 2, 6, 20 };
+	constexpr std::array<int, 2> cols{ 40, 65 };
+	constexpr int width{ cols[1] - cols[0] };
+	constexpr int centerX{ cols[0] + width / 2 };
+
+
+	econio_clrscr();
+
+
+	for (const auto& y : rows)
+	{
+		for (int x = cols.front(); x < cols.back() + 1; x++)
+		{
+			econio_gotoxy(x, y);
+			if (x == cols.front() || x == cols.back())
+				std::cout << "+";
+			else
+				std::cout << "-";
+		}
+	}
+
+
+	for (const auto& x : cols)
+	{
+		for (int y = rows.front() + 1; y < rows.back(); y++)
+		{
+			econio_gotoxy(x, y);
+
+			if (std::find(rows.begin(), rows.end(), y) != rows.end())
+				continue;
+			else
+				std::cout << "|";
+		}
+	}
+
+
+	econio_textcolor(COL_YELLOW);
+	std::string gameOverText = "GAME OVER!";
+	econio_gotoxy(centerX - gameOverText.length() / 2, 4);
+	std::cout << gameOverText;
+
+
+	std::string scorePrefix = "Final score: ";
+	std::string scoreText = scorePrefix + std::to_string(score);
+	econio_gotoxy(centerX - scoreText.length() / 2, 5);
+	std::cout << scoreText;
+
+
+	econio_textcolor(COL_WHITE);
+	std::string option1 = "Play Again";
+	econio_gotoxy(centerX - option1.length() / 2, 10);
+	std::cout << option1;
+
+
+	std::string option2 = "Change Difficulty";
+	econio_gotoxy(centerX - option2.length() / 2, 12);
+	std::cout << option2;
+
+
+	std::string option3 = "Quit";
+	econio_gotoxy(centerX - option3.length() / 2, 14);
+	std::cout << option3;
+
+
+	econio_textcolor(COL_LIGHTGRAY);
+	std::string instruction1 = "[UP/DOWN]: Navigate";
+	econio_gotoxy(centerX - instruction1.length() / 2, 17);
+	std::cout << instruction1;
+
+
+	std::string instruction2 = "[ENTER]: Select";
+	econio_gotoxy(centerX - instruction2.length() / 2, 18);
+	std::cout << instruction2;
+
+
+	econio_flush();
+
+
+	econio_gotoxy(0, 22); // For end program text
 }

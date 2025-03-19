@@ -91,9 +91,9 @@ void Game::handleScore()
 
 bool Game::replay() const
 {
-	constexpr Position replayPos{Settings::boardHeight + 3, 0 };
-	constexpr Position yesPos{Settings::boardHeight + 4, 0 };
-	constexpr Position noPos{ Settings::boardHeight + 4, 4 };
+	constexpr Position replayPos{Settings::boardHeight + 5, 0 };
+	constexpr Position yesPos{Settings::boardHeight + 5, 0 };
+	constexpr Position noPos{ Settings::boardHeight + 5, 5 };
 
 	econio_gotoxy(replayPos.x, replayPos.y);
 	std::cout << "Replay ?";
@@ -105,37 +105,34 @@ bool Game::replay() const
 	std::cout << "No";
 	
 	Direction currentDir{ Direction::left };
-
+	econio_gotoxy(yesPos.x, yesPos.y + 1);
 	while (true)
 	{
-		Direction newDir{ m_controller.getMenuDirection(currentDir) };
-
-		if (currentDir == newDir)
+		if (econio_kbhit())
 		{
-			if (m_controller.hasPressedEnter())
+			const int key{ econio_getch() };
+
+			switch (key)
 			{
-				switch (newDir)
-				{
-				case Direction::right: return false;
-				case Direction::left: return true;
-				}
+			case KEY_ENTER: return currentDir == Direction::left ? true : false;
+
+
+			case KEY_LEFT:
+				currentDir = Direction::left;
+				econio_gotoxy(yesPos.x, yesPos.y + 1);
+				break;
+
+
+			case KEY_RIGHT:
+				currentDir = Direction::right;
+				econio_gotoxy(noPos.x, noPos.y + 1);
+				break;
+
+				
+			default: continue;
 			}
-			continue;
-		}
 
-
-		else if (newDir == Direction::right)
-		{
-			econio_gotoxy(noPos.x, noPos.y + 1);
-			//std::cout << "-";
 		}
-		else if (newDir == Direction::left)
-		{
-			econio_gotoxy(yesPos.x, yesPos.y + 1);
-			//std::cout << "-";
-		}
-
-		currentDir = newDir;
 	}
 	return true;
 }
