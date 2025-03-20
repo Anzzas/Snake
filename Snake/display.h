@@ -6,7 +6,7 @@
 #include <deque>
 #include <array>
 
-namespace ReplayMenuSettings
+namespace MenuSettings
 {
 	constexpr std::array<int, 3> rows{ 2, 6, 20 };
 	constexpr std::array<int, 2> cols{ 40, 65 };
@@ -32,10 +32,13 @@ public:
 
 
 	/** Displaying once the Replay Menu and the select Cursor in real time*/
-	void renderReplayMenu(const int& score, const InputType& input) const;
+	void renderMenu(const int& score, const InputType& input, MenuType menuType) const;
 
 
 	void displayLoadingText() const;
+
+
+	void resetFlags();
 
 private:
 
@@ -44,11 +47,11 @@ private:
 
 
 	/** State for the first frame only for the replay menu*/
-	mutable bool m_firstReplayMenuFrame{ true };
+	mutable bool m_firstMenuFrame{ true };
 
 
 	/** Position state to keep in memory the select Cursor position*/
-	mutable Position m_currentCursorPos{ ReplayMenuSettings::difficultyCursorPos };
+	mutable Position m_currentCursorPos{ MenuSettings::difficultyCursorPos };
 
 
 	/** Rendering the borders of the game*/
@@ -85,10 +88,11 @@ private:
 	void renderReplayMenuBorders() const;
 
 
-	void renderReplayMenuText(const int& score) const;
+	void renderReplayMenuText(const int& score, MenuType menutype) const;
 
 
-	void renderReplayMenuSelectCursor(const InputType& input) const;
+	void renderMenuSelectCursor(const InputType& input) const;
+
 };
 
 #endif

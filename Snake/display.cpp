@@ -1,7 +1,7 @@
 ﻿#include "display.h"
 
 using namespace Settings;
-using namespace ReplayMenuSettings;
+using namespace MenuSettings;
 
 void Display::render(const std::deque<Position>& snakeBody, const Position& food, const int& score) const
 {
@@ -139,10 +139,10 @@ void Display::welcomeMsg() const
 }
 
 
-void Display::renderReplayMenu(const int& score, const InputType& input) const
+void Display::renderMenu(const int& score, const InputType& input, MenuType menuType) const
 {
 
-	if (m_firstReplayMenuFrame)
+	if (m_firstMenuFrame)
 	{
 		econio_clrscr();
 
@@ -150,20 +150,20 @@ void Display::renderReplayMenu(const int& score, const InputType& input) const
 		renderReplayMenuBorders();
 
 
-		renderReplayMenuText(score);
+		renderReplayMenuText(score, menuType);
 
 
-		m_firstReplayMenuFrame = false;
+		m_firstMenuFrame = false;
 	}
 
 
-	renderReplayMenuSelectCursor(input);
+	renderMenuSelectCursor(input);
 
 
 	econio_flush();
 
 
-	econio_gotoxy(0, 22); // For end program text
+	econio_gotoxy(0, 22); // For end program text only
 }
 
 
@@ -196,22 +196,22 @@ void Display::renderReplayMenuBorders() const
 	}
 }
 
-void Display::renderReplayMenuText(const int& score) const
+void Display::renderReplayMenuText(const int& score, MenuType menuType) const
 {
 	econio_textcolor(COL_YELLOW);
-	std::string gameOverText{ "GAME OVER!" };
+	std::string gameOverText{ menuType == MenuType::replay_menu ? "GAME OVER!" : "SNAKE" };
 	econio_gotoxy(centerX - gameOverText.length() / 2, 4);
 	std::cout << gameOverText;
 
 
-	std::string scorePrefix{ "Final score: " };
-	std::string scoreText = scorePrefix + std::to_string(score);
+	std::string scorePrefix{ menuType == MenuType::replay_menu ? "Final score: " : " " };
+	std::string scoreText{ menuType == MenuType::replay_menu ? scorePrefix + std::to_string(score) : " " };
 	econio_gotoxy(centerX - scoreText.length() / 2, 5);
 	std::cout << scoreText;
 
 
 	econio_textcolor(COL_WHITE);
-	std::string option1{ "Play Again" };
+	std::string option1{ menuType == MenuType::replay_menu ? "Play Again" : "Play" };
 	econio_gotoxy(centerX - option1.length() / 2, 10);
 	std::cout << option1;
 
@@ -238,7 +238,7 @@ void Display::renderReplayMenuText(const int& score) const
 }
 
 
-void Display::renderReplayMenuSelectCursor(const InputType& input) const
+void Display::renderMenuSelectCursor(const InputType& input) const
 {
 	
 	if (input == InputType::up_arrow || input == InputType::down_arrow)
@@ -292,4 +292,12 @@ void Display::displayLoadingText() const
 	econio_textcolor(COL_LIGHTGRAY);
 	econio_gotoxy(50, 15);
 	std::cout << "Loading ...";
+}
+
+
+void Display::resetFlags()
+{
+	m_firstMainGameFrame = true;
+	m_firstMenuFrame = true;
+	m_currentCursorPos = MenuSettings::difficultyCursorPos;
 }

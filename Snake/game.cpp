@@ -1,14 +1,20 @@
 ﻿#include "game.h"
 
+using enum MenuSelection;
+
 void Game::run()
 {
+	econio_rawmode();
+
+
+	if (!Menu(MenuType::main_menu))
+		return;
+
+
 	m_display.displayLoadingText();
 
 
 	econio_sleep(GameSettings::loadingTime);
-
-
-	econio_rawmode();
 
 
 	while (m_isRunning)
@@ -87,11 +93,27 @@ void Game::handleScore()
 
 bool Game::replay() const
 {
-	ReplaySelection selection{ReplaySelection::playAgain};
+	MenuSelection selection{ play };
 
 
-	m_display.renderReplayMenu(m_score, InputType::up_arrow); // Do once
+	m_display.renderMenu(m_score, InputType::up_arrow, MenuType::replay_menu); // Do once for the first frame
 	
+
+	selection = getMenuSelection(selection, MenuType::replay_menu);
+
+
+	switch (selection)
+	{
+	case play: return true;
+	case changeDifficulty: [[fallthrough]]; // not implemented yet
+	case quit: return false;
+	}
+}
+
+
+MenuSelection Game::getMenuSelection(MenuSelection& selection, MenuType menuType) const
+{
+
 	while (true)
 	{
 		InputType input{ m_controller.getInput() };
@@ -101,9 +123,9 @@ bool Game::replay() const
 		{
 			switch (selection)
 			{
-			case ReplaySelection::playAgain: return true;
-			case ReplaySelection::changeDifficulty: continue; // Not implemented yet
-			case ReplaySelection::quit: return false;
+			case play: return play;
+			case changeDifficulty: [[fallthrough]]; // Not implemented yet
+			case quit: return quit;
 			}
 		}
 
@@ -118,18 +140,18 @@ bool Game::replay() const
 
 				switch (selection)
 				{
-				case ReplaySelection::playAgain:
-					selection = ReplaySelection::quit;
+				case play:
+					selection = quit;
 					break;
 
 
-				case ReplaySelection::changeDifficulty:
-					selection = ReplaySelection::playAgain;
+				case changeDifficulty:
+					selection = play;
 					break;
 
 
-				case ReplaySelection::quit:
-					selection = ReplaySelection::changeDifficulty;
+				case quit:
+					selection = changeDifficulty;
 					break;
 				}
 
@@ -141,18 +163,18 @@ bool Game::replay() const
 
 				switch (selection)
 				{
-				case ReplaySelection::playAgain:
-					selection = ReplaySelection::changeDifficulty;
+				case play:
+					selection = changeDifficulty;
 					break;
 
 
-				case ReplaySelection::changeDifficulty:
-					selection = ReplaySelection::quit;
+				case changeDifficulty:
+					selection = quit;
 					break;
 
 
-				case ReplaySelection::quit:
-					selection = ReplaySelection::playAgain;
+				case quit:
+					selection = play;
 					break;
 				}
 
@@ -162,9 +184,34 @@ bool Game::replay() const
 
 			default: continue;
 			}
-
-
-			m_display.renderReplayMenu(m_score, input);
 		}
+
+
+		m_display.renderMenu(m_score, input, MenuType::replay_menu);
+	}
+}
+
+bool Game::Menu(MenuType menuType)
+{
+
+	MenuSelection selection{ play };
+
+
+	m_display.renderMenu(m_score, InputType::up_arrow, menuType); // Do once for the first frame
+
+
+	selection = getMenuSelection(selection, menuType);
+
+
+	m_display.resetFlags();
+
+
+	switch (selection)
+	{
+	case play: 
+		econio_clrscr();
+		return true;
+	case changeDifficulty: [[fallthrough]]; // not implemented yet
+	case quit: return false;
 	}
 }

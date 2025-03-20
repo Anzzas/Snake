@@ -53,6 +53,13 @@ private:
 
 	/** Return bool whether the player wants to replay the game or not*/
 	bool replay() const;
+
+
+	MenuSelection getMenuSelection(MenuSelection& selection, MenuType menuType) const;
+
+
+
+	bool Menu(MenuType menuType);
 };
 
 #endif

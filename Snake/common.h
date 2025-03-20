@@ -6,7 +6,7 @@
 namespace Settings
 {
 	constexpr int boardHeight{ 25 };
-	constexpr int boardWidth{ 25 };
+	constexpr int boardWidth{ 50 };
 }
 
 struct Position
@@ -50,11 +50,14 @@ enum class Direction
 };
 
 
-enum class ReplaySelection
+enum class MenuSelection
 {
-	playAgain,
+	play,
 	changeDifficulty,
 	quit,
+	easy,
+	medium,
+	hard,
 	max_selections
 };
 
@@ -69,6 +72,15 @@ enum class InputType
 	escape,
 	none_key,
 	max_inputTypes
+};
+
+
+enum class MenuType
+{
+	main_menu,
+	replay_menu,
+	difficulty_menu,
+	max_menuTypes
 };
 
 #endif
