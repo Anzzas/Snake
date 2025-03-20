@@ -4,14 +4,12 @@ using enum MenuSelection;
 
 void Game::run()
 {
-	econio_rawmode();
-
 
 	if (!Menu(MenuType::main_menu))
 		return;
 
 
-	m_display.displayLoadingText();
+	m_display->displayLoadingText();
 
 
 	econio_sleep(GameSettings::loadingTime);
@@ -24,34 +22,18 @@ void Game::run()
 
 		econio_sleep(GameSettings::gameSpeed);
 	}
-
-
-	if (replay())
-	{
-
-		econio_clrscr();
-
-
-		Game newGame{};
-
-
-		newGame.run();
-	}
-
-
-	econio_normalmode();
 }
 
 void Game::update()
 {
 
-	m_display.render(m_snake.getBody(), m_food.getPos(), m_score);
+	m_display->render(m_snake->getBody(), m_food->getPos(), m_score);
 
 
-	m_snake.move(m_controller.getDirection(m_snake.getDirection()));
+	m_snake->move(m_controller->getDirection(m_snake->getDirection()));
 
 
-	if (m_controller.isQuitReq() || checkCollision())
+	if (m_controller->isQuitReq() || checkCollision())
 	{
 		m_isRunning = false;
 		return;
@@ -64,14 +46,14 @@ void Game::update()
 bool Game::checkCollision() const
 {
 	// Check wall collision
-	if (m_board.isWall(m_snake.getBody()[0]))
+	if (m_board->isWall(m_snake->getBody()[0]))
 		return true;
 
 
 	// Check Snake Body Collision
-	for (size_t i = 1; i < m_snake.getBody().size(); i++)
+	for (size_t i = 1; i < m_snake->getBody().size(); i++)
 	{
-		if (m_snake.getBody()[0] == m_snake.getBody()[i])
+		if (m_snake->getBody()[0] == m_snake->getBody()[i])
 			return true;
 	}
 
@@ -81,32 +63,13 @@ bool Game::checkCollision() const
 
 void Game::handleScore()
 {
-	if (m_snake.getBody()[0] == m_food.getPos())
+	if (m_snake->getBody()[0] == m_food->getPos())
 	{
 		m_score += GameSettings::addScore;
 
-		m_food.generate(Position::createRandomPosition(m_snake.getBody()));
+		m_food->generate(Position::createRandomPosition(m_snake->getBody()));
 		
-		m_snake.grow();
-	}
-}
-
-bool Game::replay() const
-{
-	MenuSelection selection{ play };
-
-
-	m_display.renderMenu(m_score, InputType::up_arrow, MenuType::replay_menu); // Do once for the first frame
-	
-
-	selection = getMenuSelection(selection, MenuType::replay_menu);
-
-
-	switch (selection)
-	{
-	case play: return true;
-	case changeDifficulty: [[fallthrough]]; // not implemented yet
-	case quit: return false;
+		m_snake->grow();
 	}
 }
 
@@ -116,7 +79,7 @@ MenuSelection Game::getMenuSelection(MenuSelection& selection, MenuType menuType
 
 	while (true)
 	{
-		InputType input{ m_controller.getInput() };
+		InputType input{ m_controller->getInput() };
 
 
 		if (input == InputType::enter)
@@ -187,23 +150,23 @@ MenuSelection Game::getMenuSelection(MenuSelection& selection, MenuType menuType
 		}
 
 
-		m_display.renderMenu(m_score, input, MenuType::replay_menu);
+		m_display->renderMenu(m_score, input, MenuType::replay_menu);
 	}
 }
 
-bool Game::Menu(MenuType menuType)
+bool Game::Menu(MenuType menuType) const
 {
 
 	MenuSelection selection{ play };
 
 
-	m_display.renderMenu(m_score, InputType::up_arrow, menuType); // Do once for the first frame
+	m_display->renderMenu(m_score, InputType::up_arrow, menuType); // Do once for the first frame
 
 
 	selection = getMenuSelection(selection, menuType);
 
 
-	m_display.resetFlags();
+	m_display->resetFlags();
 
 
 	switch (selection)
@@ -214,4 +177,12 @@ bool Game::Menu(MenuType menuType)
 	case changeDifficulty: [[fallthrough]]; // not implemented yet
 	case quit: return false;
 	}
+}
+
+bool Game::replayGame() const
+{
+	econio_clrscr();
+
+
+	return Menu(MenuType::replay_menu);
 }

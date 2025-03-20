@@ -6,6 +6,8 @@ class Food
 {
 public:
 
+	Food() = default;
+
 	Food(Position pos)
 		: m_pos{ pos }
 	{

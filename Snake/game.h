@@ -18,21 +18,34 @@ class Game
 {
 public:
 
-	Game() = default;
+	Game(std::unique_ptr<Board> board, std::unique_ptr<Snake> snake, std::unique_ptr<Food> food, std::unique_ptr<PlayerController> controller, std::unique_ptr<Display> display)
+		: m_board{ std::move(board) }
+		, m_snake{ std::move(snake) }
+		, m_food{ std::move(food) }
+		, m_controller{ std::move(controller) }
+		, m_display{ std::move(display) }
+		, m_score{}
+		, m_isRunning{ true }
+	{
+		m_food->generate(Position::createRandomPosition(m_snake->getBody()));
+	}
 
 
 	/** Main Game function where everything runs*/
 	void run();
 
+
+	bool replayGame() const;
+
 private:
 
-	Board m_board{};
-	Snake m_snake{};
-	Food m_food{Position::createRandomPosition(m_snake.getBody())};
-	PlayerController m_controller{};
-	Display m_display{};
-	int m_score{};
-	bool m_isRunning{ true };
+	std::unique_ptr<Board> m_board;
+	std::unique_ptr<Snake> m_snake;
+	std::unique_ptr<Food> m_food;
+	std::unique_ptr<PlayerController> m_controller;
+	std::unique_ptr<Display> m_display;
+	int m_score;
+	bool m_isRunning;
 
 
 	/** Loop where everythings in updated every frame (Render, Score, objects Positions)*/
@@ -51,15 +64,10 @@ private:
 	void handleScore();
 
 
-	/** Return bool whether the player wants to replay the game or not*/
-	bool replay() const;
-
-
 	MenuSelection getMenuSelection(MenuSelection& selection, MenuType menuType) const;
 
 
-
-	bool Menu(MenuType menuType);
+	bool Menu(MenuType menuType) const;
 };
 
 #endif
