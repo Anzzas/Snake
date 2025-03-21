@@ -4,9 +4,14 @@ using enum MenuSelection;
 
 void Game::run()
 {
+	static bool firstStart{ true };
 
-	if (!Menu(MenuType::main_menu))
-		return;
+	if (firstStart)
+	{
+		firstStart = false;
+		if (!Menu(MenuType::main_menu))
+			return;
+	}
 
 
 	m_display->displayLoadingText();
@@ -157,7 +162,7 @@ MenuSelection Game::getMenuSelection(MenuSelection& selection, MenuType menuType
 bool Game::Menu(MenuType menuType) const
 {
 
-	MenuSelection selection{ play };
+	MenuSelection selection{ menuType == MenuType::difficulty_menu ? easy : play };
 
 
 	m_display->renderMenu(m_score, InputType::up_arrow, menuType); // Do once for the first frame

@@ -2,6 +2,7 @@
 #define COMMON_H
 #include "random.h"
 #include <deque>
+#include <array>
 
 namespace Settings
 {
@@ -82,5 +83,24 @@ enum class MenuType
 	difficulty_menu,
 	max_menuTypes
 };
+
+
+enum class DifficultyMode
+{
+	easy,
+	medium,
+	hard,
+	max_difficulties
+};
+
+
+inline std::ostream& operator<< (std::ostream& out, const DifficultyMode& mode)
+{
+	std::array<std::string, static_cast<size_t>(DifficultyMode::max_difficulties)> text{ "Easy", "Medium", "Hard" };
+
+	out << text[static_cast<size_t>(mode)];
+
+	return out;
+}
 
 #endif

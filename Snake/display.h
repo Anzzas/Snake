@@ -85,10 +85,10 @@ private:
 	void removeOldFrame(const std::deque<Position>& snakeBody, const Position& food, const int& score) const;
 
 
-	void renderReplayMenuBorders() const;
+	void renderMenuBorders() const;
 
 
-	void renderReplayMenuText(const int& score, MenuType menutype) const;
+	void renderMenuText(const int& score, MenuType menutype) const;
 
 
 	void renderMenuSelectCursor(const InputType& input) const;

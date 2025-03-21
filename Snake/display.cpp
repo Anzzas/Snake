@@ -147,10 +147,10 @@ void Display::renderMenu(const int& score, const InputType& input, MenuType menu
 		econio_clrscr();
 
 
-		renderReplayMenuBorders();
+		renderMenuBorders();
 
 
-		renderReplayMenuText(score, menuType);
+		renderMenuText(score, menuType);
 
 
 		m_firstMenuFrame = false;
@@ -167,7 +167,7 @@ void Display::renderMenu(const int& score, const InputType& input, MenuType menu
 }
 
 
-void Display::renderReplayMenuBorders() const
+void Display::renderMenuBorders() const
 {
 	for (const auto& y : rows)
 	{
@@ -196,44 +196,93 @@ void Display::renderReplayMenuBorders() const
 	}
 }
 
-void Display::renderReplayMenuText(const int& score, MenuType menuType) const
+void Display::renderMenuText(const int& score, MenuType menuType) const
 {
 	econio_textcolor(COL_YELLOW);
-	std::string gameOverText{ menuType == MenuType::replay_menu ? "GAME OVER!" : "SNAKE" };
-	econio_gotoxy(centerX - gameOverText.length() / 2, 4);
-	std::cout << gameOverText;
+	std::string titleText{};
+	switch (menuType)
+	{
+	case MenuType::main_menu:
+		titleText = "SNAKE";
+		break;
+	case MenuType::replay_menu:
+		titleText = "GAME OVER!";
+		break;
+	case MenuType::difficulty_menu:
+		titleText = "CHOOSE DIFFICULTY";
+		break;
+	}
+	econio_gotoxy(centerX - static_cast<int>(titleText.length()) / 2, 4);
+	std::cout << titleText;
 
 
-	std::string scorePrefix{ menuType == MenuType::replay_menu ? "Final score: " : " " };
-	std::string scoreText{ menuType == MenuType::replay_menu ? scorePrefix + std::to_string(score) : " " };
-	econio_gotoxy(centerX - scoreText.length() / 2, 5);
-	std::cout << scoreText;
+	std::string text2Prefix{};
+	switch (menuType)
+	{
+	case MenuType::main_menu:
+		text2Prefix = " ";
+		break;
+	case MenuType::replay_menu:
+		text2Prefix = "Final score: ";
+		break;
+	case MenuType::difficulty_menu:
+		text2Prefix = "Current difficulty: ";
+		break;
+	}
+
+	std::string text2Suffix{};
+	switch (menuType)
+	{
+	case MenuType::main_menu:
+		text2Suffix = " ";
+		break;
+	case MenuType::replay_menu:
+		text2Suffix = text2Prefix + std::to_string(score);
+		break;
+	case MenuType::difficulty_menu:
+		text2Suffix = "CHOOSE DIFFICULTY";
+		break;
+	}
+	econio_gotoxy(centerX - static_cast<int>(text2Prefix.length()) / 2, 5);
+	std::cout << text2Prefix;
 
 
 	econio_textcolor(COL_WHITE);
-	std::string option1{ menuType == MenuType::replay_menu ? "Play Again" : "Play" };
-	econio_gotoxy(centerX - option1.length() / 2, 10);
+	std::string option1{};
+	switch (menuType)
+	{
+	case MenuType::main_menu:
+		option1 = "Play";
+		break;
+	case MenuType::replay_menu:
+		option1 = "Play again";
+		break;
+	case MenuType::difficulty_menu:
+		option1 = "Easy";
+		break;
+	}
+	econio_gotoxy(centerX - static_cast<int>(option1.length()) / 2, 10);
 	std::cout << option1;
 
 
-	std::string option2{ "Change Difficulty" };
-	econio_gotoxy(centerX - option2.length() / 2, 12);
+	std::string option2{menuType == MenuType::difficulty_menu ? "Medium" : "Change Difficulty"};
+	econio_gotoxy(centerX - static_cast<int>(option2.length()) / 2, 12);
 	std::cout << option2;
 
 
-	std::string option3{ "Quit" };
-	econio_gotoxy(centerX - option3.length() / 2, 14);
+	std::string option3{menuType == MenuType::difficulty_menu ? "Hard" : "Quit"};
+	econio_gotoxy(centerX - static_cast<int>(option3.length()) / 2, 14);
 	std::cout << option3;
 
 
 	econio_textcolor(COL_LIGHTGRAY);
 	std::string instruction1{ "[UP/DOWN]: Navigate" };
-	econio_gotoxy(centerX - instruction1.length() / 2, 17);
+	econio_gotoxy(centerX - static_cast<int>(instruction1.length()) / 2, 17);
 	std::cout << instruction1;
 
 
 	std::string instruction2{ "[ENTER]: Select" };
-	econio_gotoxy(centerX - instruction2.length() / 2, 18);
+	econio_gotoxy(centerX - static_cast<int>(instruction2.length()) / 2, 18);
 	std::cout << instruction2;
 }
 
@@ -243,7 +292,7 @@ void Display::renderMenuSelectCursor(const InputType& input) const
 	
 	if (input == InputType::up_arrow || input == InputType::down_arrow)
 	{
-		econio_gotoxy(m_currentCursorPos.x, m_currentCursorPos.y);
+		econio_gotoxy(static_cast<int>(m_currentCursorPos.x), static_cast<int>(m_currentCursorPos.y));
 		std::cout << " ";
 
 
@@ -281,7 +330,7 @@ void Display::renderMenuSelectCursor(const InputType& input) const
 		}
 
 
-		econio_gotoxy(m_currentCursorPos.x, m_currentCursorPos.y);
+		econio_gotoxy(static_cast<int>(m_currentCursorPos.x), static_cast<int>(m_currentCursorPos.y));
 		std::cout << ">";
 	}
 }
