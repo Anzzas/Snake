@@ -32,7 +32,7 @@ public:
 
 
 	/** Displaying once the Replay Menu and the select Cursor in real time*/
-	void renderMenu(const int& score, const InputType& input, MenuType menuType) const;
+	void renderMenu(const int& score, const InputType& input, MenuType menuType, const DifficultyMode& difficulty) const;
 
 
 	void displayLoadingText() const;
@@ -88,7 +88,7 @@ private:
 	void renderMenuBorders() const;
 
 
-	void renderMenuText(const int& score, MenuType menutype) const;
+	void renderMenuText(const int& score, MenuType menutype, const DifficultyMode& difficulty) const;
 
 
 	void renderMenuSelectCursor(const InputType& input) const;

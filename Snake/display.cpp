@@ -139,7 +139,7 @@ void Display::welcomeMsg() const
 }
 
 
-void Display::renderMenu(const int& score, const InputType& input, MenuType menuType) const
+void Display::renderMenu(const int& score, const InputType& input, MenuType menuType, const DifficultyMode& difficulty) const
 {
 
 	if (m_firstMenuFrame)
@@ -150,7 +150,7 @@ void Display::renderMenu(const int& score, const InputType& input, MenuType menu
 		renderMenuBorders();
 
 
-		renderMenuText(score, menuType);
+		renderMenuText(score, menuType, difficulty);
 
 
 		m_firstMenuFrame = false;
@@ -196,7 +196,7 @@ void Display::renderMenuBorders() const
 	}
 }
 
-void Display::renderMenuText(const int& score, MenuType menuType) const
+void Display::renderMenuText(const int& score, MenuType menuType, const DifficultyMode& difficulty) const
 {
 	econio_textcolor(COL_YELLOW);
 	std::string titleText{};
@@ -226,25 +226,33 @@ void Display::renderMenuText(const int& score, MenuType menuType) const
 		text2Prefix = "Final score: ";
 		break;
 	case MenuType::difficulty_menu:
-		text2Prefix = "Current difficulty: ";
+		text2Prefix = "Current: ";
 		break;
 	}
 
-	std::string text2Suffix{};
+	std::string text2{};
 	switch (menuType)
 	{
 	case MenuType::main_menu:
-		text2Suffix = " ";
+		text2 = " ";
 		break;
+
 	case MenuType::replay_menu:
-		text2Suffix = text2Prefix + std::to_string(score);
+		text2 = text2Prefix + std::to_string(score);
 		break;
+
 	case MenuType::difficulty_menu:
-		text2Suffix = "CHOOSE DIFFICULTY";
-		break;
+		switch (difficulty)
+		{
+		case DifficultyMode::easy: text2 = text2Prefix + "easy";
+			break;
+		case DifficultyMode::medium: text2 = text2Prefix + "medium";
+			break;
+		case DifficultyMode::hard: text2 = text2Prefix + "hard";
+		}
 	}
 	econio_gotoxy(centerX - static_cast<int>(text2Prefix.length()) / 2, 5);
-	std::cout << text2Prefix;
+	std::cout << text2;
 
 
 	econio_textcolor(COL_WHITE);

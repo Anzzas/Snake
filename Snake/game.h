@@ -6,11 +6,20 @@
 #include "playerController.h"
 #include "display.h"
 #include "econio.h"
+#include <map>
 
 namespace GameSettings
 {
+	inline const std::map<DifficultyMode, double> difficultyMap{
+	{DifficultyMode::easy, 0.1},
+	{DifficultyMode::medium, 0.05},
+	{DifficultyMode::hard, 0.03} };
+
+	inline DifficultyMode currentDifficulty{ DifficultyMode::easy };
+
+	inline double gameSpeed{ difficultyMap.at(currentDifficulty) };
+
 	constexpr int addScore{ 50 };
-	constexpr double gameSpeed{ 0.05 };
 	constexpr double loadingTime{ 1.5 };
 }
 
@@ -64,10 +73,11 @@ private:
 	void handleScore();
 
 
-	MenuSelection getMenuSelection(MenuSelection& selection, MenuType menuType) const;
+	MenuSelection& getMenuSelection(MenuSelection& selection, MenuType menuType, DifficultyMode& difficulty) const;
 
 
 	bool Menu(MenuType menuType) const;
+
 };
 
 #endif

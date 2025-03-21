@@ -79,7 +79,7 @@ void Game::handleScore()
 }
 
 
-MenuSelection Game::getMenuSelection(MenuSelection& selection, MenuType menuType) const
+MenuSelection& Game::getMenuSelection(MenuSelection& selection, MenuType menuType, DifficultyMode& difficulty) const
 {
 
 	while (true)
@@ -88,74 +88,127 @@ MenuSelection Game::getMenuSelection(MenuSelection& selection, MenuType menuType
 
 
 		if (input == InputType::enter)
-		{
-			switch (selection)
+			return selection;
+
+
+			if (input == InputType::up_arrow || input == InputType::down_arrow)
 			{
-			case play: return play;
-			case changeDifficulty: [[fallthrough]]; // Not implemented yet
-			case quit: return quit;
-			}
-		}
 
-
-		else if (input == InputType::up_arrow || input == InputType::down_arrow)
-		{
-
-
-			switch (input)
-			{
-			case InputType::up_arrow:
-
-				switch (selection)
+				if (menuType == MenuType::main_menu || menuType == MenuType::replay_menu)
 				{
-				case play:
-					selection = quit;
-					break;
+
+					switch (input)
+					{
+					case InputType::up_arrow:
+
+						switch (selection)
+						{
+						case play:
+							selection = quit;
+							break;
 
 
-				case changeDifficulty:
-					selection = play;
-					break;
+						case changeDifficulty:
+							selection = play;
+							break;
 
 
-				case quit:
-					selection = changeDifficulty;
-					break;
+						case quit:
+							selection = changeDifficulty;
+							break;
+						}
+
+
+						break;
+
+
+					case InputType::down_arrow:
+
+						switch (selection)
+						{
+						case play:
+							selection = changeDifficulty;
+							break;
+
+
+						case changeDifficulty:
+							selection = quit;
+							break;
+
+
+						case quit:
+							selection = play;
+							break;
+						}
+
+
+						break;
+
+
+					default: continue;
+					}
 				}
 
 
-				break;
 
-
-			case InputType::down_arrow:
-
-				switch (selection)
+				else
 				{
-				case play:
-					selection = changeDifficulty;
-					break;
+
+					switch (input)
+					{
+					case InputType::up_arrow:
+
+						switch (selection)
+						{
+						case easy:
+							selection = hard;
+							break;
 
 
-				case changeDifficulty:
-					selection = quit;
-					break;
+						case medium:
+							selection = easy;
+							break;
 
 
-				case quit:
-					selection = play;
-					break;
+						case hard:
+							selection = medium;
+							break;
+						}
+
+
+						break;
+
+
+					case InputType::down_arrow:
+
+						switch (selection)
+						{
+						case easy:
+							selection = medium;
+							break;
+
+
+						case medium:
+							selection = hard;
+							break;
+
+
+						case hard:
+							selection = easy;
+							break;
+						}
+
+
+						break;
+
+
+					default: continue;
+					}
 				}
-
-
-				break;
-
-
-			default: continue;
 			}
-		}
 
 
-		m_display->renderMenu(m_score, input, MenuType::replay_menu);
+		m_display->renderMenu(m_score, input, MenuType::replay_menu, difficulty);
 	}
 }
 
@@ -165,10 +218,10 @@ bool Game::Menu(MenuType menuType) const
 	MenuSelection selection{ menuType == MenuType::difficulty_menu ? easy : play };
 
 
-	m_display->renderMenu(m_score, InputType::up_arrow, menuType); // Do once for the first frame
+	m_display->renderMenu(m_score, InputType::up_arrow, menuType, GameSettings::currentDifficulty); // Do once for the first frame
 
 
-	selection = getMenuSelection(selection, menuType);
+	selection = getMenuSelection(selection, menuType, GameSettings::currentDifficulty);
 
 
 	m_display->resetFlags();
@@ -179,9 +232,31 @@ bool Game::Menu(MenuType menuType) const
 	case play: 
 		econio_clrscr();
 		return true;
-	case changeDifficulty: [[fallthrough]]; // not implemented yet
+	case changeDifficulty: 
+		Menu(MenuType::difficulty_menu);
+		break;
 	case quit: return false;
+
+
+	case easy: 
+		GameSettings::currentDifficulty = DifficultyMode::easy;
+		break;
+	case medium:
+		GameSettings::currentDifficulty = DifficultyMode::medium;
+		break;
+	case hard:
+		GameSettings::currentDifficulty = DifficultyMode::hard;
 	}
+
+
+	if (menuType == MenuType::difficulty_menu)
+	{
+		GameSettings::gameSpeed = GameSettings::difficultyMap.at(GameSettings::currentDifficulty);
+		econio_clrscr();
+	}
+
+
+	return true;
 }
 
 bool Game::replayGame() const
