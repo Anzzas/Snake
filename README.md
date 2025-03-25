@@ -34,9 +34,9 @@ This console-based Snake game offers a simple yet engaging gameplay experience. 
 
 ## Controls
 
-Arrow Keys - Control snake direction
-Escape - Quit game
-Enter - Select menu options
+- Arrow Keys - Control snake direction
+- Escape - Quit game
+- Enter - Select menu options
 
 
 ## Technical Details
